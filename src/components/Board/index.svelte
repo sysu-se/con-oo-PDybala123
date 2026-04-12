@@ -7,6 +7,8 @@
 	import { candidates } from '@sudoku/stores/candidates';
 	import Cell from './Cell.svelte';
 
+	import { gameStore } from '../../stores/gameStore';
+
 	function isSelected(cursorStore, x, y) {
 		return cursorStore.x === x && cursorStore.y === y;
 	}
@@ -27,6 +29,12 @@
 
 		return gridStore[cursorStore.y][cursorStore.x];
 	}
+
+	function handleCellClick(x, y) {
+		if ($gamePaused) return;
+		gameStore.guess({ row: y, col: x, value: 5 });
+	}
+
 </script>
 
 <div class="board-padding relative z-10">
@@ -37,7 +45,7 @@
 
 		<div class="bg-white shadow-2xl rounded-xl overflow-hidden w-full h-full max-w-xl grid" class:bg-gray-200={$gamePaused}>
 
-			{#each $userGrid as row, y}
+			{#each $gameStore.grid as row, y}
 				{#each row as value, x}
 					<Cell {value}
 					      cellY={y + 1}
